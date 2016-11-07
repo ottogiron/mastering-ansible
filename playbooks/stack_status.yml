@@ -39,3 +39,11 @@
       with_items: "{{app_index.results}}"
 
     
+    - name: verify backend db response
+      uri: url=http://{{hostvars[item]['ansible_host']}}/db return_content=yes
+      with_items: "{{groups.webserver}}"    
+      register: app_db
+      
+    - fail: msg="index failed to return content"  
+      when: "'Database Connected from {{item.item}}!' not in item.content"
+      with_items: "{{app_db.results}}"
