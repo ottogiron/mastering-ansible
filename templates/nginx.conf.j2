@@ -1,6 +1,7 @@
+
 upstream demo {
 {% for server in groups.webserver %}
-server {{server}};
+server {{hostvars[server]['ansible_host']}};
 {% endfor %}
 }
 
@@ -8,6 +9,6 @@ server {
     listen 80;
 
     location / {
-        proxy_path http://demo
+        proxy_pass   http://demo;
     }
 }
