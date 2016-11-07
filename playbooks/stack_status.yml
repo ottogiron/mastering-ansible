@@ -26,3 +26,16 @@
 
     - name: verify mysql is listening  on 3306
       wait_for: port=3306 timeout=1
+
+- hosts: loadbalancer
+  tasks:  
+    - name: verify backend response
+      uri: url=http://{{hostvars[item]['ansible_host']}} return_content=yes
+      with_items: "{{groups.webserver}}"    
+      register: app_index
+      
+    - fail: msg="index failed to return content"  
+      when: "'Hello, from sunny {{item.item}}!' not in item.content"
+      with_items: "{{app_index.results}}"
+
+    
