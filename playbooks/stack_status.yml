@@ -2,6 +2,7 @@
 
 - hosts: loadbalancer
   become: true
+  gather_facts: false
   tasks:
     - name: verify nginx service
       command: service nginx status
@@ -11,6 +12,7 @@
   
 - hosts: webserver
   become: true
+  gather_facts: false
   tasks:
     - name: verify apache2 status
       command: service apache2 status
@@ -28,6 +30,7 @@
       wait_for: host={{ ansible_eth1.ipv4.address }} port=3306 timeout=1
 
 - hosts: loadbalancer
+  gather_facts: false
   tasks:  
     - name: verify backend response
       uri: url=http://{{hostvars[item]['ansible_host']}} return_content=yes
